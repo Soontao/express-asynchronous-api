@@ -1,9 +1,9 @@
 import { equal } from "node:assert";
 import { describe, it } from "node:test";
-import { a } from "../src/index.mjs";
+import { createAsyncApiMiddleware } from "../src/index.mjs";
 
-describe("Test Suite", () => {
-  it("should equal to 1", () => {
-    equal(a, 1);
+describe("express async simple tests", () => {
+  it("should support create new middleware", () => {
+    equal(typeof createAsyncApiMiddleware({}), "function");
   });
 });
