@@ -26,7 +26,7 @@ export function createAsyncApiMiddleware(options = {}) {
 
   router.get("/-/responses/:requestId", asyncResponseApi);
 
-  router.use(raw({ type: "*/*" }), asyncScheduleMiddleware);
+  router.use(raw({ type: "*/*", limit: "3mb" }), asyncScheduleMiddleware);
 
   createAsyncRequestRunner(options);
 

@@ -1,6 +1,8 @@
 import * as uuid from "uuid";
 import storage from "./storage.mjs";
 
+const QUEUE = "express_api_request_queue";
+
 export async function fetchRequestResponse(requestId) {
   const result = await storage.get(`response_${requestId}`);
   if (result === null) {
@@ -33,7 +35,7 @@ export async function saveRequestResponse(
  * @returns
  */
 export async function pollRequest() {
-  const record = await storage.rpop("request_queue");
+  const record = await storage.rpop(QUEUE);
   if (record === null) return;
 
   const { requestId, url, method, headers, bodyInBase64 } = JSON.parse(record);
@@ -51,7 +53,7 @@ export async function queueRequest(request) {
   const requestId = uuid.v4();
   const { body, method, headers, url } = request;
   await storage.rpush(
-    "request_queue",
+    QUEUE,
     JSON.stringify({
       requestId,
       url,

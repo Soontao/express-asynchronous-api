@@ -29,6 +29,5 @@ export async function asyncResponseApi(req, res) {
  */
 export async function asyncScheduleMiddleware(req, res) {
   const requestId = await queueRequest(req);
-  // accepted
   res.status(202).json({ requestId });
 }

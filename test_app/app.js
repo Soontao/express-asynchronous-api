@@ -5,7 +5,7 @@ const app = express();
 
 app.use(
   "/async-api",
-  createAsyncApiMiddleware({ target: "https://httpbin.org" }),
+  createAsyncApiMiddleware({ target: "https://postman-echo.com" }),
 );
 
 app.listen(3001);

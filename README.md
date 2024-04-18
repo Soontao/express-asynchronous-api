@@ -5,5 +5,6 @@
 ## Roadmap
 
 - [ ] redis storage
+  - [ ] different queue
 - [ ] concurrency restriction
 - [ ] workload restriction
