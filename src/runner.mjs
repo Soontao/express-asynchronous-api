@@ -5,7 +5,7 @@ import storage from "./storage.mjs";
  * @param {import("./index.mjs").AsyncAPIOptions} options
  */
 export function createAsyncRequestRunner(options) {
-  setInterval(async () => {
+  setInterval(async function _asyncReqRunner() {
     try {
       const record = await storage.rpop("request_queue");
       if (record === null) return;

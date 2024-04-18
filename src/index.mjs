@@ -41,7 +41,7 @@ async function _asyncCheckApi(req, res) {
  */
 function _asyncApi(req, res) {
   const requestId = uuid.v4();
-  const { rawBody, method, headers, url } = req;
+  const { body, method, headers, url } = req;
   storage.rpush(
     "request_queue",
     JSON.stringify({
@@ -49,7 +49,7 @@ function _asyncApi(req, res) {
       url,
       method,
       headers,
-      rawBodyInBase64: rawBody?.toString?.("base64"),
+      rawBodyInBase64: body?.toString?.("base64"),
     }),
   );
   // accepted
@@ -67,7 +67,7 @@ export function createAsyncApiMiddleware(options = {}) {
 
   router.get("/-/responses/:requestId", _asyncCheckApi);
 
-  router.use(raw(), _asyncApi);
+  router.use(raw({ type: "*/*" }), _asyncApi);
 
   createAsyncRequestRunner(options);
 
