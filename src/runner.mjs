@@ -3,21 +3,23 @@ import { pollRequest, saveRequestResponse } from "./async_request_queue.mjs";
 /**
  *
  * @param {import("./index.mjs").AsyncAPIOptions} options
+ * @returns
  */
-export function createAsyncRequestRunner(options) {
-  setInterval(async function _asyncReqRunner() {
-    try {
-      const request = await pollRequest();
-      if (request === undefined) {
-        return;
-      }
+async function asyncReqRunner(options) {
+  try {
+    const request = await pollRequest();
+    if (request === undefined) {
+      return;
+    }
+    const url = [options.target, request.url].join("");
 
-      const response = await fetch([options.target, request.url].join(""), {
+    try {
+      const response = await fetch({
+        url,
         method: request.method,
         headers: request.headers,
         body: request.body,
       });
-
       const responseAr = await response.arrayBuffer();
       const responseBody =
         responseAr.byteLength > 0
@@ -31,7 +33,23 @@ export function createAsyncRequestRunner(options) {
         responseBody,
       );
     } catch (error) {
-      options.logger?.error?.("technical error happened", error);
+      options.logger?.error?.("error while reading response", error);
+      const errorPayload = JSON.stringify({ error: error.message });
+      await saveRequestResponse(
+        request.requestId,
+        500, // internal server error
+        [["Content-Type", "application/json"]],
+        Buffer.from(errorPayload).toString("base64"),
+      );
     }
-  }, options.taskInterval);
+  } catch (error) {
+    options.logger?.error?.("technical error happened while poll queue", error);
+  }
+}
+/**
+ *
+ * @param {import("./index.mjs").AsyncAPIOptions} options
+ */
+export function createAsyncRequestRunner(options) {
+  setInterval(() => asyncReqRunner(options), options.taskInterval);
 }
