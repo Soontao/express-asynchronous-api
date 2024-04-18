@@ -1,3 +1,5 @@
 import Redis from "ioredis-mock";
 
-export default new Redis();
+const storage = new Redis();
+
+export default storage;
