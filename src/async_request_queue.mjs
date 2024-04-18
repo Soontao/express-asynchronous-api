@@ -3,8 +3,12 @@ import storage from "./storage.mjs";
 
 const QUEUE = "express_api_request_queue";
 
+function _generateResponseId(requestId) {
+  return `express_api_request_response_${requestId}`;
+}
+
 export async function fetchRequestResponse(requestId) {
-  const result = await storage.get(`response_${requestId}`);
+  const result = await storage.get(_generateResponseId(requestId));
   if (result === null) {
     return null;
   }
@@ -24,7 +28,7 @@ export async function saveRequestResponse(
   bodyInBase64,
 ) {
   await storage.set(
-    `response_${requestId}`,
+    _generateResponseId(requestId),
     JSON.stringify({ headers, status, bodyInBase64 }),
   );
 }
