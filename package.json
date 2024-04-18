@@ -1,5 +1,6 @@
 {
-  "name": "js-project-template",
+  "name": "express-asynchronous-api",
+  "description": "make express endpoint to asynchronous api",
   "version": "0.0.1",
   "type": "module",
   "main": "src/index.js",
