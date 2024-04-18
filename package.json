@@ -4,7 +4,7 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "test": "node --test ./test",
+    "test": "node --test ./test/**/*.test.js",
     "lint": "eslint src/** --fix",
     "release": "npx standard-version --no-verify && git push --follow-tags origin main",
     "format": "npx prettier -w src"
