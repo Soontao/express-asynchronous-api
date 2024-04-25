@@ -39,7 +39,7 @@ export async function saveRequestResponse(
  * @returns
  */
 export async function pollRequest() {
-  const record = await storage.rpop(QUEUE);
+  const record = await storage.lpop(QUEUE);
   if (record === null) return;
 
   const { requestId, url, method, headers, bodyInBase64 } = JSON.parse(record);
