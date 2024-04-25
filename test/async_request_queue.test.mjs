@@ -6,37 +6,39 @@ import {
   queueRequest,
   saveRequestResponse,
 } from "../src/async_request_queue.mjs";
-import storage from "../src/storage.mjs";
+import { createStorage } from "../src/storage.mjs";
 
 describe("express async simple tests", () => {
+  const storage = createStorage({ storageType: "mock" });
+
   beforeEach(() => {
     storage.lpop = mock.fn(() => null);
     storage.rpush = mock.fn();
     storage.get = mock.fn(() => null);
   });
   it("should support poll request", async () => {
-    await pollRequest();
+    await pollRequest(storage);
     equal(storage.lpop.mock.callCount(), 1);
   });
 
   it("should support push request", async () => {
-    await queueRequest({});
+    await queueRequest(storage, {});
     equal(storage.rpush.mock.callCount(), 1);
   });
 
   it("should fetchRequestResponse", async () => {
     storage.lpop.mock.mockImplementationOnce(() => ({}));
     storage.get.mock.mockImplementationOnce(() => JSON.stringify({}));
-    await fetchRequestResponse("id");
+    await fetchRequestResponse(storage, "id");
   });
 
   it("should fetchRequestResponse when no request", async () => {
     storage.lpop.mock.mockImplementationOnce(() => ({}));
     storage.get.mock.mockImplementationOnce(() => null);
-    await fetchRequestResponse("id");
+    await fetchRequestResponse(storage, "id");
   });
 
   it("should saveRequestResponse", async () => {
-    await saveRequestResponse("id", 200, {}, undefined);
+    await saveRequestResponse(storage, "id", 200, {}, undefined);
   });
 });

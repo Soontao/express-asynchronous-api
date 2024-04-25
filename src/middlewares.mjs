@@ -1,12 +1,14 @@
 /* eslint-disable no-unused-vars */
 import { fetchRequestResponse, queueRequest } from "./async_request_queue.mjs";
+import { AsyncRequestMiddlewareContext } from "./context.mjs";
 
 /**
  *
- * @param {import("./index.mjs").AsyncAPIOptions} options
+ * @param {AsyncRequestMiddlewareContext} context
  * @returns
  */
-export function createAsyncResponseApi(options) {
+export function createAsyncResponseApi(context) {
+  const { options } = context;
   /**
    * @type {import("express").RequestHandler}
    */
@@ -34,9 +36,10 @@ export function createAsyncResponseApi(options) {
 
 /**
  *
- * @param {import("./index.mjs").AsyncAPIOptions} options
+ * @param {AsyncRequestMiddlewareContext} context
  */
-export function createAsyncScheduleMiddleware(options) {
+export function createAsyncScheduleMiddleware(context) {
+  const { options } = context;
   /**
    * @type {import("express").RequestHandler}
    */

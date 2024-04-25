@@ -2,12 +2,13 @@ import { pollRequest, saveRequestResponse } from "./async_request_queue.mjs";
 
 /**
  * @private
- * @param {import("./index.mjs").AsyncAPIOptions} options
+ * @param {import("./context.mjs").AsyncRequestMiddlewareContext} context
  * @returns
  */
-export async function asyncReqRunner(options) {
+export async function asyncReqRunner(context) {
+  const { options, storage } = context;
   try {
-    const request = await pollRequest();
+    const request = await pollRequest(storage);
     if (request === undefined) {
       return;
     }
@@ -26,6 +27,7 @@ export async function asyncReqRunner(options) {
           : undefined;
       const responseHeaders = Array.from(response.headers.entries());
       await saveRequestResponse(
+        storage,
         request.requestId,
         response.status,
         responseHeaders,
@@ -35,6 +37,7 @@ export async function asyncReqRunner(options) {
       options.logger?.error?.("error while reading response", error);
       const errorPayload = JSON.stringify({ error: error.message });
       await saveRequestResponse(
+        storage,
         request.requestId,
         500, // internal server error
         [["Content-Type", "application/json"]],
@@ -47,8 +50,8 @@ export async function asyncReqRunner(options) {
 }
 /**
  *
- * @param {import("./index.mjs").AsyncAPIOptions} options
+ * @param {import("./context.mjs").AsyncRequestMiddlewareContext} context
  */
-export function createAsyncRequestRunner(options) {
-  setInterval(() => asyncReqRunner(options), options.taskInterval);
+export function createAsyncRequestRunner(context) {
+  setInterval(() => asyncReqRunner(context), context.options.taskInterval);
 }
