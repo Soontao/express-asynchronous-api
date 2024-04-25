@@ -1,11 +1,11 @@
 import { pollRequest, saveRequestResponse } from "./async_request_queue.mjs";
 
 /**
- *
+ * @private
  * @param {import("./index.mjs").AsyncAPIOptions} options
  * @returns
  */
-async function asyncReqRunner(options) {
+export async function asyncReqRunner(options) {
   try {
     const request = await pollRequest();
     if (request === undefined) {
@@ -14,8 +14,7 @@ async function asyncReqRunner(options) {
     const url = [options.target, request.url].join("");
 
     try {
-      const response = await fetch({
-        url,
+      const response = await fetch(url, {
         method: request.method,
         headers: request.headers,
         body: request.body,
