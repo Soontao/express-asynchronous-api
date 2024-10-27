@@ -22,6 +22,6 @@
   "dependencies": {
     "express": "^4.19.2",
     "ioredis-mock": "^8.9.0",
-    "uuid": "^10.0.0"
+    "uuid": "^11.0.0"
   }
 }
